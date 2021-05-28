@@ -61,24 +61,60 @@ fig_map.update_layout(
     showlegend=False)
 
 
-row = html.Div(
+widgets = html.Div(
     [
-        dbc.Row(dbc.Col(dbc.Card([dbc.CardHeader("Title"), dbc.CardBody([dcc.Graph(id='graph-with-slider', figure=fig_gap), dcc.Slider(
-            id='year-slider',
-            min=gap['year'].min(),
-            max=gap['year'].max(),
-            value=gap['year'].min(),
-            marks={str(year): str(year) for year in gap['year'].unique()},
-            step=None
-        )])])), style={"padding-bottom": "25px"}),
+        dbc.Row(
+            dbc.Col(
+                dbc.Card(
+                    [dbc.CardHeader("Title"),
+                     dbc.CardBody(
+                        [dcc.Graph(id='graph-with-slider', figure=fig_gap),
+                         dcc.Slider(
+                            id='year-slider',
+                            min=gap['year'].min(),
+                            max=gap['year'].max(),
+                            value=gap['year'].min(),
+                            marks={str(year): str(year)
+                                   for year in gap['year'].unique()},
+                            step=None
+                        )
+                        ]
+                    )
+                    ]
+                )
+            ), style={"padding-bottom": "25px"}),
+
         dbc.Row(
             [
-                dbc.Col(dbc.Card([dbc.CardHeader("Title"), dbc.CardBody(
-                    dcc.Graph(id='example_graph1', figure=fig))])),
-                dbc.Col(dbc.Card([dbc.CardHeader("Title"), dbc.CardBody(
-                    dcc.Graph(id='example_graph2', figure=fig_scatter))])),
-                dbc.Col(dbc.Card([dbc.CardHeader("Title"), dbc.CardBody(
-                    dcc.Graph(id='example_graph3', figure=fig_map))])),
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader("Title"),
+                            dbc.CardBody(
+                                dcc.Graph(id='example_graph1', figure=fig))
+                        ]
+                    )
+                ),
+
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader("Title"),
+                            dbc.CardBody(
+                                dcc.Graph(id='example_graph2', figure=fig_scatter))
+                        ]
+                    )
+                ),
+
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader("Title"),
+                            dbc.CardBody(
+                                dcc.Graph(id='example_graph3', figure=fig_map))
+                        ]
+                    )
+                ),
             ]
         ),
     ],
@@ -87,13 +123,16 @@ row = html.Div(
 
 
 app.layout = html.Div(children=[
-    html.H1(children='Hello Dash'),
+    dbc.Jumbotron([
+        html.H1(children='Hello Dash'),
 
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-    row,
-    dbc.Spinner(color="primary")
+        html.Div(children='''
+            Dash: A web application framework for Python.
+        '''),
+    ]
+    ),
+    widgets,
+    dbc.Spinner(color="danger")
 
 ])
 

@@ -61,6 +61,25 @@ fig_map.update_layout(
     showlegend=False)
 
 
+card = dbc.Card(
+    [
+        dbc.CardHeader(
+            dbc.Tabs(
+                [
+                    dbc.Tab(label="Tab 1", tab_id="tab-1"),
+                    dbc.Tab(label="Tab 2", tab_id="tab-2"),
+                    dbc.Tab(label="Tab 3", tab_id="tab-3"),
+                ],
+                id="card-tabs",
+                card=True,
+                active_tab="tab-1",
+            )
+        ),
+        dbc.CardBody(html.Div(id="card-content", className="card-text")),
+    ]
+)
+
+
 widgets = html.Div(
     [
         dbc.Row(
@@ -117,6 +136,13 @@ widgets = html.Div(
                 ),
             ]
         ),
+
+        dbc.Row(
+            dbc.Col(
+                card
+            )
+
+        )
     ],
     style={"padding": "25px"}
 )
@@ -132,7 +158,16 @@ app.layout = html.Div(children=[
     ]
     ),
     widgets,
-    dbc.Spinner(color="danger")
+    dbc.Spinner(color="danger"),
+    dbc.Toast(
+        [html.P("This is the content of the toast", className="mb-0")],
+        id="auto-toast",
+        header="Info",
+        icon="info",
+        duration=4000,
+        style={"position": "fixed", "top": 66, "right": 10, "width": 350},
+
+    )
 
 ])
 
@@ -152,5 +187,28 @@ def update_figure(selected_year):
     return fig
 
 
+@app.callback(
+    [Output("auto-toast", "children"), Output("auto-toast",
+                                              "is_open")], [Input("card-tabs", "active_tab")]
+)
+def tab_content(active_tab):
+    if active_tab == "tab-2":
+        return html.P("The plot may take a moment to render"), True
+    else:
+        return html.P(""), False
+
+
+@app.callback(
+    Output("card-content", "children"), [Input("card-tabs", "active_tab")]
+)
+def tab_content(active_tab):
+    if active_tab == "tab-1":
+        return dcc.Graph(id='example_graph4', figure=fig)
+    elif active_tab == "tab-2":
+        return dcc.Graph(id="example_graph5", figure=fig_scatter)
+    elif active_tab == "tab-3":
+        return dcc.Graph(id='example_graph6', figure=fig_map)
+
+
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, threaded=True)
